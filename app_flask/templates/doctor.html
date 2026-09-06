@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kymapsis - Portale Medico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        body {
+            background-color: #f4f6f9;
+            font-family: 'Inter', sans-serif;
+            color: #2b2b2b;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            height: 100vh;
+            background-color: #ffffff;
+            border-right: 1px solid #eef2fa;
+            position: fixed;
+            width: 260px;
+            padding-top: 2rem;
+            z-index: 1000;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .logo-text {
+            font-weight: 800;
+            font-size: 1.8rem;
+            letter-spacing: -0.5px;
+            color: #1a1a1a;
+        }
+
+        .logo-sub {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            display: block;
+            line-height: 0.8;
+            font-weight: 600;
+        }
+
+        .nav-link {
+            color: #555;
+            border-radius: 10px;
+            margin-bottom: 0.3rem;
+            padding: 0.7rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #ebf0ff;
+            color: #2855f4;
+            font-weight: 600;
+        }
+
+        .card-custom {
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px solid #eaedf3;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bg-doctor-header {
+            background: linear-gradient(135deg, #102a43 0%, #243b55 100%);
+            color: white;
+        }
+
+        /* --- NUOVO TEMA VIOLETTO --- */
+        /* Sovrascriviamo il "Primary" di Bootstrap */
+        .text-primary {
+            color: #7c3aed !important;
+        }
+
+        .bg-primary {
+            background-color: #7c3aed !important;
+        }
+
+        .btn-primary {
+            background-color: #7c3aed !important;
+            border-color: #7c3aed !important;
+            color: #fff !important;
+        }
+
+        .btn-primary:hover {
+            background-color: #6d28d9 !important;
+            border-color: #6d28d9 !important;
+        }
+
+        .btn-outline-primary {
+            color: #7c3aed !important;
+            border-color: #7c3aed !important;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: #7c3aed !important;
+            color: #fff !important;
+        }
+
+        /* Menu laterale */
+        .nav-link:hover,
+        .nav-link.active {
+            background-color: #f3e8ff !important;
+            /* Sfondo violetto chiarissimo */
+            color: #7c3aed !important;
+            font-weight: 600;
+        }
+
+        /* Intestazioni e Box Scuri */
+        .bg-doctor-header {
+            background: linear-gradient(135deg, #2e1065 0%, #4c1d95 100%) !important;
+            /* Gradiente viola scuro */
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar d-flex flex-column px-3">
+        <div class="d-flex align-items-center mb-4 px-2 mt-2">
+            <i class="bi bi-heart-pulse-fill fs-2 me-2 text-primary"></i>
+            <div>
+                <span class="logo-text">Kymapsis</span>
+                <span class="logo-sub">Area Medica</span>
+            </div>
+        </div>
+
+        <ul class="nav flex-column nav-pills" id="portalTabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'dashboard' or not active_tab %}active{% endif %}" id="dash-tab"
+                    data-bs-toggle="tab" href="#dashboard" role="tab" style="cursor: pointer;">
+                    <i class="bi bi-grid-1x2 me-2"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if active_tab == 'eeg' %}active{% endif %}" id="eeg-tab" data-bs-toggle="tab"
+                    href="#eeg-analysis" role="tab" style="cursor: pointer;">
+                    <i class="bi bi-file-medical me-2"></i> Refertazione pazienti
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">
+                    <i class="bi bi-journal-medical me-2"></i> Archivio
+                </a>
+            </li>
+        </ul>
+
+        <div class="mt-auto p-3 mb-3 border-top">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-flex align-items-center">
+                    <img src="https://ui-avatars.com/api/?name=Marco+Rossi&background=102a43&color=fff&rounded=true"
+                        width="40" class="me-2">
+                    <div>
+                        <div class="fw-bold" style="font-size: 0.85rem;">Dr. Marco Rossi</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Neurologia</div>
+                    </div>
+                </div>
+                <a href="/" title="Torna al Portale Paziente" class="text-muted"><i
+                        class="bi bi-box-arrow-right fs-5"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+
+        {% if success %}
+        <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i> {{ success }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        {% if errore %}
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i> {{ errore }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+
+        <div class="tab-content" id="portalTabsContent">
+
+            <div class="tab-pane fade {% if active_tab == 'dashboard' or not active_tab %}show active{% endif %}"
+                id="dashboard" role="tabpanel">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h3 class="fw-bold mb-0">Buongiorno, Dr. Rossi</h3>
+                        <span class="text-muted small">Panoramica e attività programmate per oggi</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-8">
+                        <div
+                            class="card-custom bg-doctor-header text-white mb-4 position-relative overflow-hidden shadow-sm">
+                            <div class="d-flex justify-content-between align-items-center position-relative z-1">
+                                <div>
+                                    <span class="badge bg-white text-dark mb-2 fw-bold"
+                                        style="font-size: 0.7rem;">PROSSIMA VISITA</span>
+                                    <h4 class="fw-bold mb-1">Visita Neurologica di Controllo</h4>
+                                    <p class="mb-0 text-white-50"><i class="bi bi-person-fill me-1"></i> Marco Verdi</p>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fs-1 fw-bold">15:30</div>
+                                    <div class="small text-white-50">Ambulatorio 2</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-custom mb-4">
+                            <h6 class="fw-bold mb-3">Agenda di Oggi</h6>
+                            <div class="list-group list-group-flush border-top">
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center border-bottom">
+                                    <div class="bg-light rounded text-center p-2 me-3" style="width: 65px;">
+                                        <div class="small fw-bold text-muted">15:30</div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">Marco Verdi</h6><small class="text-muted">Visita
+                                            Neurologica di Controllo</small>
+                                    </div>
+                                </div>
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center border-bottom">
+                                    <div class="bg-light rounded text-center p-2 me-3" style="width: 65px;">
+                                        <div class="small fw-bold text-muted">16:15</div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">Asia dell'Aquila</h6><small
+                                            class="text-muted">Prima
+                                            Visita - Emicrania Cronica</small>
+                                    </div>
+                                </div>
+                                <div class="list-group-item px-0 py-3 d-flex align-items-center border-bottom-0">
+                                    <div class="bg-light rounded text-center p-2 me-3" style="width: 65px;">
+                                        <div class="small fw-bold text-muted">17:00</div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">Riccardo di Giovanni</h6><small
+                                            class="text-muted">Lettura
+                                            Referto Risonanza Magnetica</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="card-custom mb-4"
+                            style="background-color: #fffdf5; border-left: 4px solid #ffc107;">
+                            <h6 class="fw-bold mb-3">Da Revisionare</h6>
+                            <div class="d-flex align-items-start mb-2">
+                                <i class="bi bi-file-earmark-medical text-warning fs-4 me-3 mt-1"></i>
+                                <div>
+                                    <h6 class="mb-0 fw-bold" style="font-size: 0.95rem;">3 Tracciati EEG</h6>
+                                    <p class="text-muted mb-2" style="font-size: 0.8rem;">In attesa di validazione IA e
+                                        referto finale.</p>
+                                    <button
+                                        class="btn btn-sm btn-outline-warning text-dark rounded-pill fw-semibold py-1 px-3"
+                                        onclick="document.getElementById('eeg-tab').click()">Avvia Refertazione</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-custom">
+                            <h6 class="fw-bold mb-3">Pazienti Recenti</h6>
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://ui-avatars.com/api/?name=Anna+Meli&background=e6f9e6&color=198754&rounded=true"
+                                    width="40" class="me-3">
+                                <div>
+                                    <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">Anna Meli</h6>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Ultimo accesso: Ieri</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center mb-3">
+                                <img src="https://ui-avatars.com/api/?name=Luca+Sani&background=f0f4ff&color=2855f4&rounded=true"
+                                    width="40" class="me-3">
+                                <div>
+                                    <h6 class="mb-0 fw-semibold" style="font-size: 0.9rem;">Luca Sani</h6>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Ultimo accesso: 2gg fa</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade {% if active_tab == 'eeg' %}show active{% endif %}" id="eeg-analysis"
+                role="tabpanel">
+
+                {% if previsione is none %}
+
+                <div id="patient-list-view">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+                        <div>
+                            <h3 class="fw-bold mb-0">Da refertare</h3>
+                            <span class="text-muted small">Seleziona un paziente per visionare i parametri e caricare il
+                                tracciato</span>
+                        </div>
+                        <div class="input-group mt-3 mt-md-0 shadow-sm" style="max-width: 300px;">
+                            <span class="input-group-text bg-white border-end-0"><i
+                                    class="bi bi-search text-muted"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0 shadow-none"
+                                placeholder="Cerca paziente...">
+                        </div>
+                    </div>
+
+                    <div class="card-custom">
+                        <div class="list-group list-group-flush">
+                            <div
+                                class="list-group-item px-0 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom">
+                                <div class="d-flex align-items-center mb-3 mb-md-0">
+                                    <img src="https://ui-avatars.com/api/?name=Alessandro+Golinelli&background=f0f4ff&color=2855f4&rounded=true"
+                                        width="45" class="me-3">
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">Alessandro Golinelli</h6>
+                                        <small class="text-muted"><i class="bi bi-cpu me-1"></i>Esame: EEG 24h - Inviato
+                                            oggi</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-warning text-dark rounded-pill me-3 d-none d-md-block">Urgenza
+                                        Media</span>
+                                    <button class="btn btn-primary btn-sm rounded-pill px-4 fw-bold shadow-sm"
+                                        onclick="showPatientDetail()">
+                                        Apri Fascicolo
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="list-group-item px-0 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom">
+                                <div class="d-flex align-items-center mb-3 mb-md-0">
+                                    <img src="https://ui-avatars.com/api/?name=Eleonora+Vernassa&background=ffe6e6&color=d63384&rounded=true"
+                                        width="45" class="me-3">
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">Eleonora Vernassa</h6>
+                                        <small class="text-muted"><i class="bi bi-cpu me-1"></i>Esame: EEG Controllo -
+                                            Inviato ieri</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-danger rounded-pill me-3 d-none d-md-block">Alta
+                                        Urgenza</span>
+                                    <button class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold"
+                                        onclick="showPatientDetail()">
+                                        Apri Fascicolo
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="list-group-item px-0 py-3 d-flex flex-column flex-md-row justify-content-between align-items-md-center border-bottom-0">
+                                <div class="d-flex align-items-center mb-3 mb-md-0">
+                                    <img src="https://ui-avatars.com/api/?name=Samuel+Toscani&background=e6f9e6&color=198754&rounded=true"
+                                        width="45" class="me-3">
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">Samuel Toscani</h6>
+                                        <small class="text-muted"><i class="bi bi-cpu me-1"></i>Esame: Tracciato Sonno -
+                                            Inviato 2 gg fa</small>
+                                    </div>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <span class="badge bg-info text-dark rounded-pill me-3 d-none d-md-block">Bassa
+                                        Urgenza</span>
+                                    <button class="btn btn-outline-primary btn-sm rounded-pill px-4 fw-bold"
+                                        onclick="showPatientDetail()">
+                                        Apri Fascicolo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="patient-detail-view" style="display: none;">
+
+                    <div class="d-flex align-items-center mb-4">
+                        <button class="btn btn-light btn-sm rounded-circle me-3 shadow-sm"
+                            onclick="hidePatientDetail()"><i class="bi bi-arrow-left"></i></button>
+                        <div>
+                            <h3 class="fw-bold mb-0">Fascicolo Clinico</h3>
+                            <span class="text-muted small">Paziente in esame • ID: PT-84932</span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <h6 class="fw-bold mb-3">Parametri Rilevati (Ultimo Check)</h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="bg-white border rounded-3 p-3 text-center shadow-sm">
+                                        <i class="bi bi-heart-pulse text-danger fs-4 mb-2 d-block"></i>
+                                        <h5 class="fw-bold mb-0">72</h5>
+                                        <small class="text-muted" style="font-size: 0.7rem;">BPM</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="bg-white border rounded-3 p-3 text-center shadow-sm">
+                                        <i class="bi bi-activity text-primary fs-4 mb-2 d-block"></i>
+                                        <h5 class="fw-bold mb-0">120/80</h5>
+                                        <small class="text-muted" style="font-size: 0.7rem;">Pressione</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="bg-white border rounded-3 p-3 text-center shadow-sm">
+                                        <i class="bi bi-lungs text-info fs-4 mb-2 d-block"></i>
+                                        <h5 class="fw-bold mb-0">98%</h5>
+                                        <small class="text-muted" style="font-size: 0.7rem;">SpO2</small>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="bg-white border rounded-3 p-3 text-center shadow-sm">
+                                        <i class="bi bi-thermometer-half text-warning fs-4 mb-2 d-block"></i>
+                                        <h5 class="fw-bold mb-0">36.6°</h5>
+                                        <small class="text-muted" style="font-size: 0.7rem;">Temp.</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card-custom mb-4">
+                                <h6 class="fw-bold mb-2">Note Cliniche ed Anamnesi</h6>
+                                <p class="small text-muted mb-0">Paziente in follow-up. Sospetta insorgenza di lievi
+                                    mioclonie notturne. Prescritto test per indagine approfondita su eventuale attività
+                                    epilettiforme atipica.</p>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div
+                                class="card-custom bg-doctor-header border-0 shadow-lg h-100 d-flex flex-column justify-content-center">
+                                <div class="text-center mb-4">
+                                    <i class="bi bi-cloud-arrow-up text-white opacity-75" style="font-size: 3rem;"></i>
+                                    <h5 class="fw-bold mb-1 text-white mt-2">Analisi Segnale</h5>
+                                    <p class="small text-white-50 mb-0">Carica il tracciato (.csv) del paziente
+                                        per avviare il modello predittivo IA.</p>
+                                </div>
+
+                                <form action="/doctor_predict" method="POST" enctype="multipart/form-data">
+                                    <div
+                                        class="mb-3 bg-white bg-opacity-10 p-3 rounded-3 border border-light border-opacity-25">
+                                        <input class="form-control form-control-sm" type="file" id="file_csv"
+                                            name="file_csv" accept=".csv" required>
+                                    </div>
+                                    <button type="submit"
+                                        class="btn btn-light text-primary fw-bold w-100 rounded-pill py-2 shadow-sm">
+                                        <i class="bi bi-cpu me-2"></i> Analizza con IA
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% else %}
+                <div class="d-flex align-items-center mb-4">
+                    <a href="/doctor" class="btn btn-light btn-sm rounded-circle me-3 shadow-sm"><i
+                            class="bi bi-arrow-left"></i></a>
+                    <div>
+                        <h3 class="fw-bold mb-0">Esito Analisi Tracciato</h3>
+                        <span class="text-muted small">Fascicolo: Alessandro Golinelli • ID: PT-84932</span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-2">
+                        <div
+                            class="bg-white border rounded-3 p-2 d-flex align-items-center justify-content-between shadow-sm h-100">
+                            <div>
+                                <small class="text-muted d-block"
+                                    style="font-size: 0.65rem; font-weight: 600;">BPM</small>
+                                <span class="fw-bold fs-5">72</span>
+                            </div>
+                            <i class="bi bi-heart-pulse text-danger fs-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div
+                            class="bg-white border rounded-3 p-2 d-flex align-items-center justify-content-between shadow-sm h-100">
+                            <div>
+                                <small class="text-muted d-block"
+                                    style="font-size: 0.65rem; font-weight: 600;">PRESSIONE</small>
+                                <span class="fw-bold fs-5">120<span class="fs-6 text-muted">/80</span></span>
+                            </div>
+                            <i class="bi bi-activity text-primary fs-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div
+                            class="bg-white border rounded-3 p-2 d-flex align-items-center justify-content-between shadow-sm h-100">
+                            <div>
+                                <small class="text-muted d-block"
+                                    style="font-size: 0.65rem; font-weight: 600;">SPO2</small>
+                                <span class="fw-bold fs-5">98%</span>
+                            </div>
+                            <i class="bi bi-lungs text-info fs-4 opacity-75"></i>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-2">
+                        <div
+                            class="bg-white border rounded-3 p-2 d-flex align-items-center justify-content-between shadow-sm h-100">
+                            <div>
+                                <small class="text-muted d-block"
+                                    style="font-size: 0.65rem; font-weight: 600;">TEMP.</small>
+                                <span class="fw-bold fs-5">36.6°</span>
+                            </div>
+                            <i class="bi bi-thermometer-half text-warning fs-4 opacity-75"></i>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-4">
+                        <div class="bg-doctor-header border-0 rounded-3 p-2 d-flex align-items-center justify-content-between shadow-sm h-100"
+                            style="border-left: 4px solid #0dcaf0 !important;">
+                            <div>
+                                <small class="text-info d-block text-uppercase"
+                                    style="font-size: 0.65rem; font-weight: 700;"><i
+                                        class="bi bi-lightning-charge-fill me-1"></i>Tempo di Inferenza IA</small>
+                                <span class="fw-bold fs-4 text-white">{{ tempo_analisi if tempo_analisi else '0.452' }}
+                                    <span class="fs-6 fw-normal text-white-50">sec</span></span>
+                            </div>
+                            <i class="bi bi-cpu text-white opacity-25" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-custom bg-black text-white border-0 mb-4 position-relative overflow-hidden shadow-sm"
+                    style="height: 250px;">
+                    <div class="d-flex justify-content-between align-items-center p-3 z-1">
+                        <div>
+                            <h6 class="fw-bold text-light mb-0"><i class="bi bi-activity text-info me-2"></i>Tracciato
+                                Paziente
+                            </h6>
+                            <small class="text-secondary">Rendering Dati Clinici</small>
+                        </div>
+                        <button class="btn btn-sm btn-secondary rounded-pill fw-semibold border-0"
+                            data-bs-toggle="modal" data-bs-target="#inspectionModal" style="font-size: 0.75rem;"><i
+                                class="bi bi-zoom-in me-1"></i>Ispezione Visiva</button>
+                    </div>
+
+                    <div class="w-100 px-3 pb-3" style="height: 130px;">
+                        <canvas id="doctorEegChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="card-custom h-100 border-0 shadow-sm {% if previsione == 1 %}border-start border-warning border-4{% else %}border-start border-success border-4{% endif %}"
+                            style="background-color: #f8fbff;">
+                            <h5 class="fw-bold mb-3">Valutazione Modello IA</h5>
+
+                            {% if previsione == 2 %}
+                            <div class="alert alert-warning border-0 d-flex align-items-start rounded-3 shadow-sm">
+                                <i class="bi bi-exclamation-triangle-fill fs-4 text-warning me-3 mt-1"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Epilessia Rilevata (Livello 2)</h6>
+                                    <p class="small mb-0 text-dark">Il sistema di machine learning ha identificato
+                                        pattern atipici e spike-wave compatibili con attività epilettiforme di grado 2
+                                        nel file
+                                        esaminato.</p>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="alert alert-success border-0 d-flex align-items-start rounded-3 shadow-sm">
+                                <i class="bi bi-check-circle-fill fs-4 text-success me-3 mt-1"></i>
+                                <div>
+                                    <h6 class="fw-bold mb-1">Tracciato Regolare</h6>
+                                    <p class="small mb-0 text-dark">Nessuna anomalia significativa rilevata. Il segnale
+                                        rientra nei parametri normotipici analizzati dal modello.</p>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="mt-4 border-top pt-3">
+                                <h6 class="fw-bold text-uppercase text-secondary small mb-2">Metriche Tecniche</h6>
+                                <ul class="list-group list-group-flush small text-muted bg-transparent">
+                                    <li
+                                        class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent border-bottom-0 py-1">
+                                        Affidabilità predizione: <span class="fw-bold text-dark">91.4%</span></li>
+                                    <li
+                                        class="list-group-item px-0 d-flex justify-content-between align-items-center bg-transparent border-bottom-0 py-1">
+                                        Sensibilità Modello: <span class="fw-bold text-dark">Alta</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card-custom h-100 bg-white shadow-sm border-0">
+                            <h5 class="fw-bold mb-4">Emetti Referto</h5>
+
+                            <form action="/save_report" method="POST">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small text-muted">Diagnosi Ufficiale</label>
+                                    <input type="text" class="form-control" name="diagnosi"
+                                        placeholder="Es. Lieve anomalia tracciato frontale..." required>
+                                </div>
+
+                                <div class="mb-4">
+                                    <label class="form-label fw-semibold small text-muted">Commento Clinico (Visibile al
+                                        paziente)</label>
+                                    <textarea class="form-control" name="referto" rows="4"
+                                        placeholder="Scrivi qui le indicazioni e il feedback per il paziente..."
+                                        required></textarea>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2 shadow-sm">
+                                    <i class="bi bi-send-check me-2"></i> Firma e Invia Referto
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="inspectionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="modal-header border-0 pb-2">
+                    <h5 class="modal-title fw-bold">Dettaglio Ispezione Visiva - Alessandro Golinelli (PT-84932)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body position-relative p-4 bg-white">
+                    <div style="height: 60vh; width: 100%;">
+                        <canvas id="inspectionEegChart"></canvas>
+                    </div>
+
+                    <div class="position-absolute bg-white border rounded-3 p-3 shadow"
+                        style="bottom: 30px; right: 40px; z-index: 1050; border-color: #dee2e6 !important;">
+                        <h6 class="fw-bold mb-2 text-dark">Statistiche del Segnale Rilevato</h6>
+                        <div class="small">
+                            <span class="text-muted d-inline-block" style="width: 170px;">Media del Segnale:</span>
+                            <span class="fw-bold text-dark fs-6" id="stat-mean">Calcolo...</span><br>
+                            <span class="text-muted d-inline-block" style="width: 170px;">Deviazione Standard
+                                (Std):</span>
+                            <span class="fw-bold text-dark fs-6" id="stat-std">Calcolo...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Funzioni per la navigazione del layout
+        function showPatientDetail() {
+            document.getElementById('patient-list-view').style.display = 'none';
+            document.getElementById('patient-detail-view').style.display = 'block';
+        }
+
+        function hidePatientDetail() {
+            document.getElementById('patient-detail-view').style.display = 'none';
+            document.getElementById('patient-list-view').style.display = 'block';
+        }
+
+        // Funzioni Matematiche per l'Analisi
+        function calcMean(arr) {
+            const sum = arr.reduce((a, b) => a + b, 0);
+            return sum / arr.length;
+        }
+
+        function calcStd(arr, mean) {
+            const variance = arr.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / arr.length;
+            return Math.sqrt(variance);
+        }
+
+        // Inizializzazione Grafici
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxBlack = document.getElementById('doctorEegChart');
+            const ctxModal = document.getElementById('inspectionEegChart');
+
+            if (ctxBlack) {
+                fetch('/get_signal')
+                    .then(response => response.json())
+                    .then(data => {
+
+                        // 1. CALCOLO STATISTICHE CLINICHE
+                        const mean = calcMean(data);
+                        const std = calcStd(data, mean);
+
+                        // Scriviamo i risultati nell'HTML del Popup
+                        const statMeanEl = document.getElementById('stat-mean');
+                        const statStdEl = document.getElementById('stat-std');
+                        if (statMeanEl && statStdEl) {
+                            statMeanEl.textContent = mean.toFixed(3) + ' µV';
+                            statStdEl.textContent = std.toFixed(3) + ' µV';
+                        }
+
+                        // Simuliamo una frequenza di campionamento (es. 250 Hz) per l'asse X in Secondi
+                        const timeLabels = data.map((_, i) => (i / 250).toFixed(2));
+
+                        // 2. RENDERING GRAFICO NERO (Cruscotto principale)
+                        new Chart(ctxBlack, {
+                            type: 'line',
+                            data: {
+                                labels: data.map((_, i) => i),
+                                datasets: [{
+                                    label: 'Segnale',
+                                    data: data,
+                                    borderColor: '#c084fc',
+                                    backgroundColor: 'transparent',
+                                    borderWidth: 1.5,
+                                    pointRadius: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: { x: { display: false }, y: { display: false } },
+                                plugins: { legend: { display: false } }
+                            }
+                        });
+
+                        // 3. RENDERING GRAFICO POPUP (Carta Millimetrata)
+                        if (ctxModal) {
+                            new Chart(ctxModal, {
+                                type: 'line',
+                                data: {
+                                    labels: timeLabels,
+                                    datasets: [{
+                                        label: 'Ampiezza (µV)',
+                                        data: data,
+                                        borderColor: '#6d28d9', // Blu scuro medico
+                                        borderWidth: 1.2,
+                                        pointRadius: 0,
+                                        tension: 0.1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: {
+                                            title: { display: true, text: 'Tempo (s)', font: { weight: 'bold' } },
+                                            grid: { color: '#f8d7da', lineWidth: 1 }, // Griglia Rosa
+                                            ticks: { maxTicksLimit: 15 } // Evita che i numeri si accavallino
+                                        },
+                                        y: {
+                                            title: { display: true, text: 'Ampiezza (µV)', font: { weight: 'bold' } },
+                                            grid: { color: '#f8d7da', lineWidth: 1 } // Griglia Rosa
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Errore caricamento segnale:', error));
+            }
+        });
+    </script>
+</body>
+
+</html>
