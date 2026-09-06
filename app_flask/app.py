@@ -3,15 +3,20 @@ from flask import Flask, request, render_template, jsonify, send_file
 import pandas as pd
 import joblib 
 import time
+import threading
+import webbrowser
 app = Flask(__name__)
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Assumiamo che 'paziente_test2.csv' sia nella stessa cartella di app.py
-SIGNAL_FILE = 'paziente_test2.csv'
+SIGNAL_FILE = os.path.join(BASE_DIR, 'test_patient.csv')
 
 # Carichiamo il modello in memoria (simulato tramite try-except per farti testare il codice anche senza modello)
 try:
-    modello = joblib.load('modello_epilessia.pkl') 
-except:
+    modello = joblib.load(os.path.join(BASE_DIR, 'modello_epilessia.pkl'))
+except Exception as e:
+    print(f"Errore caricamento modello: {str(e)}")
     modello = None
     print("Avviso: Modello non trovato. Assicurati di avere 'modello_epilessia.pkl' per le previsioni reali.")
 
@@ -111,4 +116,11 @@ def save_report():
     return render_template('doctor.html', previsione=None, errore=None, active_tab='eeg', success="Referto salvato e inviato al paziente con successo!")
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5002)
+    porta = 5002
+
+    if not os.environ.get('WERKZEUG_RUN_MAIN'):
+        scelta = input("Quale versione vuoi aprire? (p = paziente, d = dottore): ").strip().lower()
+        percorso = '/doctor' if scelta == 'd' else '/'
+        threading.Timer(1.0, lambda: webbrowser.open(f'http://127.0.0.1:{porta}{percorso}')).start()
+
+    app.run(debug=True, port=porta)
